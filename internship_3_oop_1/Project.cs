@@ -10,10 +10,10 @@ namespace internship_3_oop_1
     {
         public string name;
         public string description;
-        DateTime start;
-        DateTime end;
-        Status status;
-       
+        readonly DateTime start;
+        readonly DateTime end;
+        public Status status;
+
         public Project(string name, string description, DateTime start, DateTime end, Status status)
         {
             this.name = name;
@@ -22,24 +22,27 @@ namespace internship_3_oop_1
             this.end = end;
             this.status = status;
         }
+
         public void ShowProjectData()
         {
-            Console.WriteLine($"Name: {this.name}\nDescription: {this.description}\nStatus: {this.status}\nDuration: {this.start} - {this.end}");
+            Console.WriteLine($"Name: {this.name}\nDescription: {this.description}\nStatus: {this.status}\nDuration: {this.start} - {this.end}\n");
         }
 
-        public void AddDescription(Project project)
+        public void CheckEndDate(DateTime dueDate)
         {
+            if (this.end.Date == dueDate.Date) this.ShowProjectData();
+        }
 
+        public bool CheckStatus(Status status)
+        {
+            if (this.status == status) return true;
+            return false;
+        }
+
+        public bool ChangeStatus(Status status)
+        {
+            if (this.status != status) return true;
+            return false;
         }
     }
-
-
-    //Funkcija koja vraća projekte na temelju određenog roka
-    //Dodavanje projekta (Konstruktor)
-    //Filtriranje po statusu
-    //Uređivanje projekta?
-    //Ispis zadataka unutar jednog projekta
-    //uređivanje statusa projekta
-
-
 }

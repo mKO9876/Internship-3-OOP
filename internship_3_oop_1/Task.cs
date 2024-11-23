@@ -9,27 +9,41 @@ namespace internship_3_oop_1
     public class Task
     {
         public string name;
-        private string description;
-        private Status status;
-        private DateTime duration_min;
-        private string project_parent;
+        public string description;
+        Status status;
+        public TimeSpan durationMin;
+        Project parentProject;
 
-        public Task()
+        public Task(string n, string d, Status s, TimeSpan duration, Project parent )
         {
-
+            this.name = n; 
+            this.description = d; 
+            this.status = s;
+            this.durationMin = duration;
+            this.parentProject = parent;
         }
 
+        private bool CheckParentStatus() //provjeri možeš li uopće mijenjati išta ako je roditelj gotov
+        {
+            if (this.parentProject.status == Status.Ended) return false;
+            else return true;
+        }
 
         public void ShowTaskData()
         {
-            Console.WriteLine($"Name: {this.name}\nDescription: {this.description}\nStatus: {this.status}\nParent Project: {project_parent}\nDuration (min): {duration_min}");
+            Console.WriteLine($"Name: {this.name}\nDescription: {this.description}\nStatus: {this.status}\nParent Project: {parentProject}\nDuration (min): {durationMin}");
+        }
+
+        public bool CheckStatus(Status status)
+        {
+            if (this.status == status) return true;
+            return false;
+        }
+
+        public bool ChangeStatus(Status status)
+        {
+            if (this.status != status) return true;
+            return false;
         }
     }
-
-
-
-    
-
-    //Uređivanje statusa zadatka
-    //Prikaz detalja zadatka
 }

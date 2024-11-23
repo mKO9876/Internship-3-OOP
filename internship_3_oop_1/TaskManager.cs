@@ -12,41 +12,41 @@ namespace internship_3_oop_1
 
         public void AddTask(Task task)
         {
-            task_list.Add(task);
-            Console.WriteLine($"Zadatak'{task.name}' uspješno dodan.");
+            this.task_list.Add(task);
+            Console.WriteLine($"Zadatak uspješno dodan.");
         }
 
         public void ShowTasks()
         {
-            foreach (Task task in task_list) task.ShowTaskData();
+            foreach (Task task in this.task_list) task.ShowTaskData();
         }
 
         //// Method to remove a task by name (or other identifiers)
-        public void RemoveTask(string task_name)
+        public void RemoveTask(Task task)
         {
-            foreach (var task in task_list)
-            {
-                if(task.name == task_name)
-                {
-                    bool removed = task_list.Remove(task);
-                    Console.WriteLine($"Task '{task_name}' removed.");
-                    return;
-                }
-            }
-            Console.WriteLine($"Task '{task_name}' not found.");
+
+            this.task_list.Remove(task);
+            Console.WriteLine($"Zadatak '{task.name}' obrisan.");
+            return;
         }
 
-        public bool CheckTaskName(string task_name)
+        public Task CheckTaskName(string task_name)
         {
-            foreach (var task in task_list)
+            foreach (var task in this.task_list)
             {
-                if (task.name == task_name)
-                {
-                    return true;
-                }
+                if (task.name == task_name) return task;
             }
+            return null;
+        }
 
-            return false;
+        public TimeSpan SumTime()
+        {
+            TimeSpan sum_all_tasks = TimeSpan.Zero;
+            foreach (var task in this.task_list)
+            {
+                sum_all_tasks += task.durationMin;
+            }
+            return sum_all_tasks;
         }
     }
 }
