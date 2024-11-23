@@ -28,9 +28,16 @@ namespace internship_3_oop_1
             Console.WriteLine($"Name: {this.name}\nDescription: {this.description}\nStatus: {this.status}\nDuration: {this.start.ToString("dd/MM/yyyy")} - {this.end.ToString("dd/MM/yyyy")}\n");
         }
 
-        public void CheckEndDate(DateTime dueDate)
+        public bool CheckEndDate(DateTime dueDate)
         {
-            if (this.end.Date == dueDate.Date) this.ShowProjectData();
+            DateTime today = DateTime.Today;
+            if (this.end.Date >= today.Date && this.end.Date <= dueDate.Date)
+            {
+                this.ShowProjectData();
+                return true;
+            }
+            return false;
+
         }
 
         public bool CheckStatus(Status status)

@@ -10,7 +10,7 @@ namespace internship_3_oop_1
     {
         public string name;
         public string description;
-        Status status;
+        public Status status;
         public TimeSpan durationMin;
         Project parentProject;
 
@@ -23,7 +23,7 @@ namespace internship_3_oop_1
             this.parentProject = parent;
         }
 
-        private bool CheckParentStatus() //provjeri možeš li uopće mijenjati išta ako je roditelj gotov
+        public bool CheckParentStatus() //provjeri možeš li uopće mijenjati išta ako je roditelj gotov
         {
             if (this.parentProject.status == Status.Ended) return false;
             else return true;
@@ -31,7 +31,7 @@ namespace internship_3_oop_1
 
         public void ShowTaskData()
         {
-            Console.WriteLine($"Name: {this.name}\nDescription: {this.description}\nStatus: {this.status}\nParent Project: {parentProject.name}\nDuration (min): {durationMin}\n");
+            Console.WriteLine($"Name: {this.name}\nDescription: {this.description}\nStatus: {this.status}\nParent Project: {parentProject.name}\nDuration (min): {durationMin.TotalMinutes}\n");
         }
 
         public bool CheckStatus(Status status)

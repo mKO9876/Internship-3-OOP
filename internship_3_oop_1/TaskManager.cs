@@ -8,47 +8,63 @@ namespace internship_3_oop_1
 {
     class TaskManager
     {
-        List<Task> task_list = new List<Task>();
+        List<Task> taskList = new List<Task>();
 
         public void AddTask(Task task)
         {
-            this.task_list.Add(task);
+            this.taskList.Add(task);
         }
 
         public void ShowTasks()
         {
-            foreach (Task task in this.task_list)
+            foreach (Task task in this.taskList)
             {
                 task.ShowTaskData();
                 Console.WriteLine("-------------------------------");
             }
         }
 
+        public int GetLength()
+        {
+            return this.taskList.Count;
+        }
+
+        public bool CheckAllTasksStatus()
+        {
+            foreach (Task task in this.taskList)
+            {
+                if (task.status != Status.Ended) return true;
+            }
+            return false;
+        }
+
         //// Method to remove a task by name (or other identifiers)
         public void RemoveTask(Task task)
         {
 
-            this.task_list.Remove(task);
+            this.taskList.Remove(task);
             return;
         }
 
-        public Task CheckTaskName(string task_name)
+        public Task CheckTaskName(string taskName)
         {
-            foreach (var task in this.task_list)
+            foreach (var task in this.taskList)
             {
-                if (task.name == task_name) return task;
+                if (task.name == taskName) return task;
             }
             return null;
         }
 
-        public TimeSpan SumTime()
+        public string SumMinutes()
         {
-            TimeSpan sum_all_tasks = TimeSpan.Zero;
-            foreach (var task in this.task_list)
+            double totalMinutes = 0;
+            foreach (var task in this.taskList)
             {
-                sum_all_tasks += task.durationMin;
+                totalMinutes += task.durationMin.TotalMinutes;
             }
-            return sum_all_tasks;
+            return totalMinutes.ToString();
         }
+
+       
     }
 }
