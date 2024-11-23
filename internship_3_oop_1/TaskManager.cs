@@ -13,12 +13,15 @@ namespace internship_3_oop_1
         public void AddTask(Task task)
         {
             this.task_list.Add(task);
-            Console.WriteLine($"Zadatak uspješno dodan.");
         }
 
         public void ShowTasks()
         {
-            foreach (Task task in this.task_list) task.ShowTaskData();
+            foreach (Task task in this.task_list)
+            {
+                task.ShowTaskData();
+                Console.WriteLine("-------------------------------");
+            }
         }
 
         //// Method to remove a task by name (or other identifiers)
@@ -26,7 +29,6 @@ namespace internship_3_oop_1
         {
 
             this.task_list.Remove(task);
-            Console.WriteLine($"Zadatak '{task.name}' obrisan.");
             return;
         }
 

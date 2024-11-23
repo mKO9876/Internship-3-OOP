@@ -31,7 +31,7 @@ namespace internship_3_oop_1
 
         public void ShowTaskData()
         {
-            Console.WriteLine($"Name: {this.name}\nDescription: {this.description}\nStatus: {this.status}\nParent Project: {parentProject}\nDuration (min): {durationMin}");
+            Console.WriteLine($"Name: {this.name}\nDescription: {this.description}\nStatus: {this.status}\nParent Project: {parentProject.name}\nDuration (min): {durationMin}\n");
         }
 
         public bool CheckStatus(Status status)

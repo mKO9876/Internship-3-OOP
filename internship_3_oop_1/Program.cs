@@ -1,10 +1,10 @@
-﻿using Microsoft.SqlServer.Server;
+﻿//using Microsoft.SqlServer.Server;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Threading.Tasks;
+//using System.Linq;
+//using System.Runtime.InteropServices.ComTypes;
+//using System.Text;
+//using System.Threading.Tasks;
 
 namespace internship_3_oop_1
 {
@@ -21,9 +21,9 @@ namespace internship_3_oop_1
             Task taskTemplate3 = new Task("Instalirati VS", "Taman instalirala", Status.Ended, new TimeSpan(0, 70, 0), projectTemplate1);
             Task taskTemplate4 = new Task("Pocetna stranica", "Napraviti početnu stranicu ", Status.Active, new TimeSpan(0, 70, 0), projectTemplate1);
 
-            Task taskTemplate1 = new Task("Pocetna stranica", "Napraviti početnu stranicu ", Status.Ended, new TimeSpan(0 ,20, 0), projectTemplate2);
+            Task taskTemplate1 = new Task("Pocetna stranica", "Napraviti početnu stranicu ", Status.Ended, new TimeSpan(0, 20, 0), projectTemplate2);
             Task taskTemplate2 = new Task("Baza podataka", "Moram prvo naučiti kako koristiti bazu", Status.Active, new TimeSpan(0, 120, 0), projectTemplate2);
-            
+
             Task taskTemplate5 = new Task("Izraditi bocu", "Pogledati tutorial kako izraditi najobičniju bocu na YT", Status.Ended, new TimeSpan(0, 10, 0), projectTemplate3);
             Task taskTemplate6 = new Task("Izrada lika u blenderu", "Potrebno je izraditi lika za video igru", Status.Waiting, new TimeSpan(0, 100, 0), projectTemplate3);
 
@@ -43,11 +43,14 @@ namespace internship_3_oop_1
             allProjects.Add(projectTemplate1, taskManagerTemplate1);
             allProjects.Add(projectTemplate2, taskManagerTemplate2);
             allProjects.Add(projectTemplate3, taskManagerTemplate3);
+
+
+
             void ProjectMenu()
             {
                 while (true)
                 {
-                    Console.WriteLine("1 - Ispis projekata i pripadajućih zadataka\n2 - Dodavanje novog projekta\n3 - Brisanje projekta\n4 - Prikaz svih zadataka s rokom u slijedećih 7 dana\n5 - Prikaz projekata filtriranih po statusu\n6 - Upravljanje pojedinim projektom\n7 -Izlaz");
+                    Console.WriteLine("1 - Ispis projekata i pripadajućih zadataka\n2 - Dodavanje novog projekta\n3 - Brisanje projekta\n4 - Prikaz svih zadataka s rokom u slijedećih 7 dana\n5 - Prikaz projekata filtriranih po statusu\n6 - Upravljanje pojedinim projektom\n7 - Izlaz");
                     string user_input = CheckUserInput("Akcija: ");
                     if (user_input == "1")
                     {
@@ -61,7 +64,6 @@ namespace internship_3_oop_1
                                 project.Key.ShowProjectData();
                                 project.Value.ShowTasks();
                             }
-                            Console.ReadKey();
                         }
                     }
                     else if (user_input == "2")
@@ -79,6 +81,8 @@ namespace internship_3_oop_1
                             if (projectName.Length > 20) Console.WriteLine("Naziv je dug. Unesite ponovno.\n");
                             if (CheckProjectName(projectName)) Console.WriteLine("Naziv već postoji, odaberite drugi naziv.\n");
                         } while (CheckProjectName(projectName) || projectName.Length > 20);
+
+                        
 
                         do
                         {
@@ -129,7 +133,17 @@ namespace internship_3_oop_1
                         Console.Clear();
                         Status user_input_status = CheckStatus("Unesite status (Active, Waiting, Ended): ");
                         Console.WriteLine("Svi projekti sa unesenim statusom: ");
-                        foreach (var project in allProjects.Keys) project.CheckStatus(user_input_status);
+                        bool checkIfPrinted = false;
+                        foreach (var project in allProjects.Keys)
+                        {
+                            if (project.CheckStatus(user_input_status))
+                            {
+                                project.ShowProjectData();
+                                checkIfPrinted = true;
+                            }
+                        }
+
+                        if (!checkIfPrinted) Console.WriteLine("Ne postoje projekti sa traženim statusom");
                     }
 
                     else if (user_input == "6")
@@ -138,7 +152,10 @@ namespace internship_3_oop_1
 
                         Project edit_project = CheckProjectExists("Unesite naziv projekta kojim želite upravljati: ");
                         if (edit_project == null) Console.WriteLine("Trenutno ne postoji projekti sa tim nazivom. Pokušajte opet.\n");
-                        else TaskMenu(edit_project, allProjects[edit_project]);
+                        else
+                        {
+                            TaskMenu(edit_project, allProjects[edit_project]);
+                        }
                     }
 
                     else if (user_input == "7")
@@ -151,98 +168,132 @@ namespace internship_3_oop_1
                 }
             }
 
-            void TaskMenu(Project parent_project, TaskManager task_list)
+            void TaskMenu(Project parentProject, TaskManager taskList)
             {
                 while (true)
                 {
                     Console.WriteLine("1 - Ispis zadataka unutar odabranog projekta\n2 - Prikaz detalja odabranog projekta\n3 - Uređivanje statusa projekta\n4 - Dodavanje zadatka unutar projekta\n5 - Brisanje zadatka iz projekta\n6 - Prikaz ukupno očekivanog vremena potrebnog za sve aktivne zadatke u projektu\n7 - Upravljanje pojedinim zadatkom\n8 - Povratak");
-                    string user_input = CheckUserInput("Akcija: ");
-                    if (user_input == "1")
+                    string userInput = CheckUserInput("Akcija: ");
+
+                    switch (userInput)
                     {
-                        Console.Clear();
-                        Console.WriteLine($"Ispis svih zadataka unutar projekta {parent_project.name}");
-                        task_list.ShowTasks();
-                    }
-                    else if (user_input == "2")
-                    {
-                        Console.Clear();
-                        Console.WriteLine("Nalazite se unutar projekta: ");
-                        parent_project.ShowProjectData();
-                    }
-                    else if (user_input == "3")
-                    {
-                        while (true)
-                        {
+
+                        case "1":
                             Console.Clear();
-                            Console.WriteLine("Trenutni projekt ima status: ", parent_project.status);
-                            Status new_status = CheckStatus("Unesite status (Active, Waiting, Ended): ");
-                            bool ok = parent_project.ChangeStatus(new_status);
-                            if (ok)
-                            {
-                                Console.WriteLine("Status projekta je uspješno izmijenjen");
-                                parent_project.ShowProjectData();
-                                break;
-                            }
-                            else Console.WriteLine("Status nije bilo moguće izmijeniti, pokušajte ponovno.\n");
-                        }
+                            Console.WriteLine($"Ispis svih zadataka unutar projekta {parentProject.name}");
+                            taskList.ShowTasks();
+                            break;
 
+                        case "2":
+                            Console.WriteLine("Nalazite se unutar projekta: ");
+                            parentProject.ShowProjectData();
+                            break;
+
+                        case "3":
+                            EditTaskStatus(parentProject, taskList);
+                            break;
+
+                        case "4":
+                            CreateNewTask(parentProject, taskList);
+                            break;
+
+                        case "5":
+                            DeleteTask(taskList);
+                            break;
+
+                        case "6":
+                            Console.Clear();
+                            Console.WriteLine($"Vrijeme potrebno za izradu svih zadataka: ", taskList.SumTime());
+                            break;
+                        case "7":
+                            TasksSubMenu(parentProject, taskList);
+                            break;
+
+                        case "8": return;
+
+                        default:
+                            Console.Clear();
+                            Console.WriteLine("Nepoznata akcija, pokušajte ponovno.\n");
+                            break;
                     }
+                }
+            }
 
-                    else if (user_input == "4")
+
+            void CreateNewTask(Project parentProject, TaskManager taskList)
+            {
+                Console.Clear();
+                string taskName = CheckTaskName("Unesite ime zadatka: ", taskList);
+
+                int descriptionLimit = 200;
+                string taskDescription = LimitUserInput("Unesite opis zadatka (mora biti ispod 200 znakova): ", descriptionLimit);
+
+                TimeSpan taskDuration = TimeConverter("Unesite trajanje zadatka u minutama: ");
+                Task newTask = new Task(taskName, taskDescription, Status.Active, taskDuration, parentProject);
+                taskList.AddTask(newTask);
+                Console.WriteLine("Zadatak uspješno izrađen!");
+                newTask.ShowTaskData();
+                return;
+            } 
+
+            void EditTaskStatus(Project parentProject, TaskManager taskList)
+            {
+                while (true)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Trenutni projekt ima status: ", parentProject.status);
+                    Status newStatus = CheckStatus("Unesite status (Active, Waiting, Ended): ");
+                    bool ok = parentProject.ChangeStatus(newStatus);
+                    if (ok)
                     {
-                        Console.Clear();
-                        string task_name = CheckTaskName("Unesite ime zadatka: ", task_list);
-
-                        int description_limit = 200;
-                        string task_description = LimitUserInput("Unesite opis zadatka (mora biti ispod 200 znakova): ", description_limit);
-
-                        TimeSpan task_duration = TimeConverter("Unesite trajanje zadatka u minutama");
-                        Task new_task = new Task(task_name, task_description, Status.Active, task_duration, parent_project);
-                        task_list.AddTask(new_task);
-                        Console.WriteLine("Zadatak uspješno izrađen!");
-                        new_task.ShowTaskData();
+                        Console.WriteLine("Status projekta je uspješno izmijenjen");
+                        parentProject.ShowProjectData();
                         break;
                     }
-                    else if (user_input == "5")
-                    {
-                        while (true)
-                        {
-                            string task_name = CheckUserInput("Unesite naziv zadatka kojeg želite obrisati: ");
-                            Task delete_task = task_list.CheckTaskName(task_name);
-                            if (delete_task != null)
-                            {
-                                Console.WriteLine("Zadatak pronađen.");
-                                delete_task.ShowTaskData();
-                                user_input = CheckUserInput("Želite li usitinu obrisati ovaj zadatak (y/n): ").ToLower();
-                                if (user_input == "y") task_list.RemoveTask(delete_task);
-                                else Console.WriteLine("Odbijeno");
-                                break;
-                            }
-                            else Console.WriteLine("Zadatak sa tim nazivom ne postoji, pokušajte ponovno.");
-                        }
-                    }
-                    else if (user_input == "6")
-                    {
-                        Console.Clear();
-                        Console.WriteLine($"Vrijeme potrebno za izradu svih zadataka: ", task_list.SumTime());
-                    }
-                    else if (user_input == "7")
-                    {
-                        while (true)
-                        {
-                            Console.Clear();
-                            Console.WriteLine("1 - Prikaz detalja odabranog zadatka \n2 - Uređivanje statusa zadatka\n3 - Povratak");
-                            user_input = CheckUserInput("Akcija: ");
-                            if (user_input == "1") { }
-                            else if (user_input == "2") { }
-                            else if (user_input == "3") break;
-                            else Console.WriteLine("Nepoznata akcija, pokušajte ponovno.\n");
-                        }
-                    }
-                    else if (user_input == "8") break;
+                    else Console.WriteLine("Status nije bilo moguće izmijeniti, pokušajte ponovno.\n");
+                }
+            }
+            
+            void DeleteTask(TaskManager taskList)
+            {
+                Task deleteTask;
+                do
+                {
+                    string taskName = CheckUserInput("Unesite naziv zadatka kojeg želite obrisati: ");
+                    deleteTask = taskList.CheckTaskName(taskName);
+                    if (deleteTask == null) Console.WriteLine("Zadatak sa tim nazivom ne postoji, pokušajte ponovno.");
+                } while (deleteTask == null);
+                Console.Clear();
+
+
+                Console.WriteLine("Zadatak pronađen: \n");
+                deleteTask.ShowTaskData();
+                string userInput = CheckUserInput("Želite li usitinu obrisati ovaj zadatak (y/n): ").ToLower();
+                if (userInput == "y")
+                {
+                    taskList.RemoveTask(deleteTask);
+                    Console.WriteLine("Zadatak uspješno obrisan.\n");
+                }
+                else Console.WriteLine("Odbijeno");
+                return;
+
+            }
+
+            void TasksSubMenu(Project parentProject, TaskManager taskList)
+            {
+                while (true)
+                {
+                    Console.Clear();
+                    Console.WriteLine("1 - Prikaz detalja odabranog zadatka \n2 - Uređivanje statusa zadatka\n3 - Povratak");
+                    string userInput = CheckUserInput("Akcija: ");
+                    if (userInput == "1") { }
+                    else if (userInput == "2") { }
+                    else if (userInput == "3") return;
                     else Console.WriteLine("Nepoznata akcija, pokušajte ponovno.\n");
                 }
             }
+
+           
 
             string LimitUserInput(string text, int limit)
             {
@@ -251,6 +302,7 @@ namespace internship_3_oop_1
                 {
                     userInput = CheckUserInput(text);
                 } while (userInput.Length > limit);
+                Console.Clear();
                 return userInput;
             }
 
@@ -263,15 +315,16 @@ namespace internship_3_oop_1
                 return false;
             }
 
-            string CheckTaskName(string text, TaskManager task_list)
+            string CheckTaskName(string text, TaskManager taskList)
             {
                 int nameLimit = 20;
                 string taskName;
                 do
                 {
                     taskName = LimitUserInput(text, nameLimit);
-                    if (task_list.CheckTaskName(taskName) != null) Console.WriteLine("Zadatak sa takvim nazivom već postoji");
-                } while (task_list.CheckTaskName(taskName) != null);
+                    if (taskList.CheckTaskName(taskName) != null) Console.WriteLine("Zadatak sa takvim nazivom već postoji");
+                } while (taskList.CheckTaskName(taskName) != null);
+                Console.Clear();
                 return taskName;
             }
 
@@ -284,7 +337,7 @@ namespace internship_3_oop_1
                     input = Console.ReadLine();
                     if (String.IsNullOrEmpty(input)) Console.WriteLine("Unos ne smije biti prazan.");
                 } while (String.IsNullOrEmpty(input));
-
+                Console.Clear();
                 return input;
             }
 
@@ -296,9 +349,14 @@ namespace internship_3_oop_1
                 do
                 {
                     dateInput = CheckUserInput(text);
+                    if (!DateTime.TryParseExact(dateInput, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture,
+                                System.Globalization.DateTimeStyles.None, out date))
+                        Console.WriteLine("Niste dobro unijeli podatke. Pokušajte ponovno.");
+                    if (today.Year - 40 > date.Year) Console.WriteLine("Zadatak ne može biti više od 40 godina star.");
 
                 } while (!DateTime.TryParseExact(dateInput, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture,
-                                System.Globalization.DateTimeStyles.None, out date) && today.Year - 40 < date.Year);
+                                System.Globalization.DateTimeStyles.None, out date) && today.Year - 40 > date.Year);
+                Console.Clear();
                 return date;
 
             }
@@ -310,7 +368,9 @@ namespace internship_3_oop_1
                 do
                 {
                     userInput = CheckUserInput(text);
+                    if (!Enum.TryParse(userInput, out status) || !Enum.IsDefined(typeof(Status), status)) Console.WriteLine("Unešena vrijednost nije validna, pokušajte ponovno.");
                 } while (!Enum.TryParse(userInput, out status) || !Enum.IsDefined(typeof(Status), status));
+                Console.Clear();
                 return status;
             }
 
@@ -342,7 +402,8 @@ namespace internship_3_oop_1
                 {
                     userInput = CheckUserInput(text);
                     if (!int.TryParse(userInput, out duration)) Console.WriteLine("Unesena vrijednost nije broj, pokušajte ponovno.");
-                } while (int.TryParse(userInput, out duration));
+                } while (!int.TryParse(userInput, out duration));
+                Console.Clear();
                 return TimeSpan.FromMinutes(duration);
             }
 

@@ -25,7 +25,7 @@ namespace internship_3_oop_1
 
         public void ShowProjectData()
         {
-            Console.WriteLine($"Name: {this.name}\nDescription: {this.description}\nStatus: {this.status}\nDuration: {this.start} - {this.end}\n");
+            Console.WriteLine($"Name: {this.name}\nDescription: {this.description}\nStatus: {this.status}\nDuration: {this.start.ToString("dd/MM/yyyy")} - {this.end.ToString("dd/MM/yyyy")}\n");
         }
 
         public void CheckEndDate(DateTime dueDate)
